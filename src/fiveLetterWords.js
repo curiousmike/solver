@@ -6,7 +6,7 @@ export const fiveLetterWords = [
 "aback",
 "abaft",
 "abaka",
-"abamp",
+"abamp", 
 "abase",
 "abash",
 "abate",

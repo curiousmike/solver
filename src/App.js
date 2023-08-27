@@ -1,6 +1,14 @@
 import "./App.css";
+import { useState, useEffect, useRef } from "react";
+
 import { fiveLetterWords } from "./fiveLetterWords.js";
-import { Container } from "./styles";
+import {
+  Container,
+  LetterContainer,
+  FiveLetterContainer,
+  LetterLabelContainer,
+} from "./styles";
+import Keyboard from "./components/keyboard";
 
 // This "appHeight" is the "fix" for iOS safari representing vh differently based on whether their footer is visible.
 const appHeight = () => {
@@ -15,9 +23,8 @@ const unavailableLetters = ["s"];
 
 const status = {
   Unknown: 0,
-  Wrong: 1,
-  WrongSpot: 2,
-  Correct: 3,
+  WrongSpot: 1,
+  Correct: 2,
 };
 
 const currentWord = [
@@ -133,11 +140,30 @@ const solveWord = () => {
 solveWord();
 
 function App() {
+  const [keyboardData, setKeyboardData] = useState({});
+
   return (
     <Container>
       Total 5 Letter Words {fiveLetterWords.length}
       <br></br>
       First Word {fiveLetterWords[0]}
+      <FiveLetterContainer>
+        <LetterLabelContainer for="letter0">First</LetterLabelContainer>
+        <LetterContainer type="text" id="letter0" name="letter0" />
+        <LetterLabelContainer for="letter1">Second</LetterLabelContainer>
+        <LetterContainer type="text" id="letter1" name="letter1" />
+        <LetterLabelContainer for="letter2">Third </LetterLabelContainer>
+        <LetterContainer type="text" id="letter2" name="letter2" />
+        <LetterLabelContainer for="letter3">Fourth</LetterLabelContainer>
+        <LetterContainer type="text" id="letter3" name="letter3" />
+        <LetterLabelContainer for="letter4">Fifth Letter </LetterLabelContainer>
+        <LetterContainer type="text" id="letter4" name="letter4" />
+      </FiveLetterContainer>
+      <Keyboard
+        // keyboardData={keyboardData}
+        // handleKeyPress={(e) => handleKey(e)}
+        visible={true}
+      />
     </Container>
   );
 }

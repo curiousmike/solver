@@ -7,22 +7,20 @@ const KeyboardRows = [
 ];
 
 function Keyboard({ handleKeyPress, keyboardData, visible }) {
-  // console.log('keyboardData = ', keyboardData);
+  console.log("keyboardData = ", keyboardData);
   return (
     <Container>
-      {visible &&
-        KeyboardRows.map((row, k) => (
-          <KeyboardRow key={k}>
-            {row.map((keyValue, i) => (
-              <SingleKey
-                data={keyboardData}
-                keyString={keyValue}
-                key={i}
-                handleKeyPress={handleKeyPress}
-              />
-            ))}
-          </KeyboardRow>
-        ))}
+      {KeyboardRows.map((row, k) => (
+        <KeyboardRow key={k}>
+          {row.map((keyValue) => (
+            <SingleKey
+              data={keyboardData[keyValue]}
+              keyString={keyValue}
+              handleKeyPress={handleKeyPress}
+            />
+          ))}
+        </KeyboardRow>
+      ))}
     </Container>
   );
 }

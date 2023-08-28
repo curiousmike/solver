@@ -5,7 +5,10 @@ function SingleKey({ keyString, handleKeyPress, data }) {
   // 1 = in game but wrong spot
   // 2 = in game RIGHT spot !
   // 3 = unused
-  const keyColor = 0; // data["key-" + keyString.toLowerCase()];
+  const keyColor = data === 1 ? 0 : 3;
+  if (data === 1) {
+    console.log("keystring = ", keyString);
+  }
   return (
     <Container
       goKey={keyString === "GO"}

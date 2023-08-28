@@ -19,7 +19,7 @@ const appHeight = () => {
 window.addEventListener("resize", appHeight);
 appHeight();
 
-const unavailableLetters = ["s"];
+let unavailableLetters = ["s"];
 
 const status = {
   Unknown: 0,
@@ -142,6 +142,37 @@ solveWord();
 function App() {
   const [keyboardData, setKeyboardData] = useState({});
 
+  const handleKey = (key) => {
+    if (key === "GO") {
+      // solveWord()
+    } else {
+      const updatedKeyboardData = { ...keyboardData };
+      if (updatedKeyboardData[key]) {
+        updatedKeyboardData[key] = 0;
+      } else {
+        updatedKeyboardData[key] = 1;
+      }
+      console.log("updatedKeybarod ", updatedKeyboardData);
+      setKeyboardData(updatedKeyboardData);
+      unavailableLetters = [];
+      for (const [key, value] of Object.entries(updatedKeyboardData)) {
+        if (value === 1) {
+          unavailableLetters.push(key);
+        }
+      }
+      console.log("unavail = ", unavailableLetters);
+      console.log("key = ", key);
+    }
+  };
+
+  const updateKeyEntry = (e) => {
+    const index = e.target.getAttribute("data-id");
+    const letter = e.target.value;
+    currentWord[index].letter = letter;
+    currentWord[index].status = status.Unknown;
+  };
+
+  console.log("keyboardData = ", keyboardData);
   return (
     <Container>
       Total 5 Letter Words {fiveLetterWords.length}
@@ -149,19 +180,49 @@ function App() {
       First Word {fiveLetterWords[0]}
       <FiveLetterContainer>
         <LetterLabelContainer for="letter0">First</LetterLabelContainer>
-        <LetterContainer type="text" id="letter0" name="letter0" />
+        <LetterContainer
+          data-id="0"
+          type="text"
+          id="letter0"
+          name="letter0"
+          onChange={updateKeyEntry}
+        />
         <LetterLabelContainer for="letter1">Second</LetterLabelContainer>
-        <LetterContainer type="text" id="letter1" name="letter1" />
+        <LetterContainer
+          type="text"
+          id="letter1"
+          name="letter1"
+          data-id="1"
+          onChange={updateKeyEntry}
+        />
         <LetterLabelContainer for="letter2">Third </LetterLabelContainer>
-        <LetterContainer type="text" id="letter2" name="letter2" />
+        <LetterContainer
+          type="text"
+          id="letter2"
+          name="letter2"
+          data-id="2"
+          onChange={updateKeyEntry}
+        />
         <LetterLabelContainer for="letter3">Fourth</LetterLabelContainer>
-        <LetterContainer type="text" id="letter3" name="letter3" />
+        <LetterContainer
+          type="text"
+          id="letter3"
+          name="letter3"
+          data-id="3"
+          onChange={updateKeyEntry}
+        />
         <LetterLabelContainer for="letter4">Fifth Letter </LetterLabelContainer>
-        <LetterContainer type="text" id="letter4" name="letter4" />
+        <LetterContainer
+          type="text"
+          id="letter4"
+          name="letter4"
+          data-id="4"
+          onChange={updateKeyEntry}
+        />
       </FiveLetterContainer>
       <Keyboard
-        // keyboardData={keyboardData}
-        // handleKeyPress={(e) => handleKey(e)}
+        keyboardData={keyboardData}
+        handleKeyPress={(e) => handleKey(e)}
         visible={true}
       />
     </Container>

@@ -15,6 +15,7 @@ export const Container = styled.div`
 export const FiveLetterContainer = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
   margin-top: 128px;
   margin-bottom: 128px;
 `;

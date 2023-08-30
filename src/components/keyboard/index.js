@@ -7,7 +7,6 @@ const KeyboardRows = [
 ];
 
 function Keyboard({ handleKeyPress, keyboardData, visible }) {
-  console.log("keyboardData = ", keyboardData);
   return (
     <Container>
       {KeyboardRows.map((row, k) => (

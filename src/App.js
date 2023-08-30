@@ -73,18 +73,15 @@ function App() {
   };
 
   const solveWord = () => {
-    let count = 0;
-    // let ridiculous = 0;
     let validWordList = [];
     console.log("start ...");
 
-    fiveLetterWords.forEach((word) => {
+    fiveLetterWords.forEach((dictionaryWord) => {
       // const word = fiveLetterWords[0]
       let isValidWord = true;
       var validationIssue = null;
       for (let wordLetterIndex = 0; wordLetterIndex < 5; wordLetterIndex++) {
-        count++;
-        const letter = word[wordLetterIndex];
+        const letter = dictionaryWord[wordLetterIndex];
         if (currentWord[wordLetterIndex].status === status.Correct) {
           if (letter !== currentWord[wordLetterIndex].letter) {
             validationIssue = `Can only be ${currentWord[wordLetterIndex].letter} in spot ${wordLetterIndex}`;
@@ -96,7 +93,6 @@ function App() {
           currentWord[wordLetterIndex].letter === ""
         ) {
           for (let u = 0; u < unavailableLetters.length; u++) {
-            count++;
             if (unavailableLetters[u] === letter) {
               isValidWord = false;
               validationIssue = `Letter not in puzzle: ${unavailableLetters[u]}`;
@@ -109,7 +105,6 @@ function App() {
             validationIssue = `Wrong spot: ${letter} is in puzzle but not index ${wordLetterIndex}`;
           }
           for (let u = 0; u < unavailableLetters.length; u++) {
-            count++;
             if (unavailableLetters[u] === letter) {
               isValidWord = false;
               validationIssue = `Letter not in puzzle: ${unavailableLetters[u]}`;
@@ -122,10 +117,10 @@ function App() {
       // ocher should not be valid for ocean
       if (isValidWord) {
         const currentWordLetterCounts = buildLetterCounts(currentWord);
-        const dictionaryWordLetterCounts = buildLetterWholeCounts(word);
+        const dictionaryWordLetterCounts =
+          buildLetterWholeCounts(dictionaryWord);
         for (const [key, value] of Object.entries(currentWordLetterCounts)) {
           // console.log('key/value = ', key, value)
-          count++;
           if (
             !dictionaryWordLetterCounts[key] ||
             dictionaryWordLetterCounts[key].count < value.count
@@ -139,17 +134,12 @@ function App() {
       }
 
       if (isValidWord) {
-        console.log("Valid : ", word);
-        validWordList.push(word);
+        console.log("Valid : ", dictionaryWord);
+        validWordList.push(dictionaryWord);
       } else {
-        // console.log(`Invalid:  ${word} validation issue ${validationIssue}`)
+        // console.log(`Invalid:  ${dictionaryWord} validation issue ${validationIssue}`)
       }
-      count++;
-      // if (count % 1000) {
-      //   console.log(`Count ${count}`);
-      // }
     });
-    console.log("total iterations to find this list = ", count);
     console.log("validWordList = ", validWordList);
   };
 
@@ -179,13 +169,19 @@ function App() {
 
   const updateKeyEntry = (e) => {
     const index = e.target.getAttribute("data-id");
-    const letter = e.target.value;
     const regex = new RegExp("[A-Za-z]");
+    const letter = e.target.value;
     const updatedCurrentWord = [...currentWord];
-    if (regex.test(letter)) {
-      updatedCurrentWord[index].letter = letter ? letter.toLowerCase() : "";
-      updatedCurrentWord[index].status =
-        letter !== "" ? status.Correct : status.Unknown;
+
+    if (letter === "") {
+      updatedCurrentWord[index].letter = "";
+      updatedCurrentWord[index].status = status.Unknown;
+    } else {
+      if (regex.test(letter)) {
+        updatedCurrentWord[index].letter = letter ? letter.toLowerCase() : "";
+        updatedCurrentWord[index].status =
+          letter !== "" ? status.Correct : status.Unknown;
+      }
     }
     setCurrentWord(updatedCurrentWord);
     console.log("updated = ", updatedCurrentWord);
@@ -197,18 +193,15 @@ function App() {
 
     if (updatedCurrentWord[index].status === status.WrongSpot) {
       updatedCurrentWord[index].status = status.Correct;
-      console.log(`index ${index} is ${status.Correct}`);
     } else if (
       updatedCurrentWord[index].status === status.Correct ||
       updatedCurrentWord[index].status === status.Unknown
     ) {
       updatedCurrentWord[index].status = status.WrongSpot;
-      console.log(`index ${index} is ${status.WrongSpot}`);
     }
     setCurrentWord(updatedCurrentWord);
   };
 
-  console.log("keyboardData = ", keyboardData);
   return (
     <Container>
       Total 5 Letter Words {fiveLetterWords.length}

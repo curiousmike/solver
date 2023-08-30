@@ -23,9 +23,9 @@ appHeight();
 
 // solveWord();
 const status = {
-  Unknown: 0,
-  WrongSpot: 1,
-  Correct: 2,
+  Unknown: "unknown",
+  WrongSpot: "wrongspot",
+  Correct: "correct",
 };
 const startingCurrentWord = [
   { letter: "", status: status.Unknown },
@@ -103,13 +103,19 @@ function App() {
               break;
             }
           }
-        } else if (
-          currentWord[wordLetterIndex].status === status.WrongSpot &&
-          letter === currentWord[wordLetterIndex].letter
-        ) {
-          isValidWord = false;
-          validationIssue = `Wrong spot: ${letter} is in puzzle but not index ${wordLetterIndex}`;
-          break;
+        } else if (currentWord[wordLetterIndex].status === status.WrongSpot) {
+          if (letter === currentWord[wordLetterIndex].letter) {
+            isValidWord = false;
+            validationIssue = `Wrong spot: ${letter} is in puzzle but not index ${wordLetterIndex}`;
+          }
+          for (let u = 0; u < unavailableLetters.length; u++) {
+            count++;
+            if (unavailableLetters[u] === letter) {
+              isValidWord = false;
+              validationIssue = `Letter not in puzzle: ${unavailableLetters[u]}`;
+              break;
+            }
+          }
         }
       }
       // final validation - verify every letter in currentWord shows up in the dictionary word
@@ -174,10 +180,13 @@ function App() {
   const updateKeyEntry = (e) => {
     const index = e.target.getAttribute("data-id");
     const letter = e.target.value;
+    const regex = new RegExp("[A-Za-z]");
     const updatedCurrentWord = [...currentWord];
-    updatedCurrentWord[index].letter = letter ? letter : "";
-    updatedCurrentWord[index].status =
-      letter !== "" ? status.Correct : status.Unknown;
+    if (regex.test(letter)) {
+      updatedCurrentWord[index].letter = letter ? letter : "";
+      updatedCurrentWord[index].status =
+        letter !== "" ? status.Correct : status.Unknown;
+    }
     setCurrentWord(updatedCurrentWord);
     console.log("updated = ", updatedCurrentWord);
   };
@@ -211,6 +220,8 @@ function App() {
           type="text"
           id="letter0"
           name="letter0"
+          maxLength="1"
+          value={currentWord[0].letter}
           onChange={updateKeyEntry}
         />
         <Button
@@ -224,6 +235,8 @@ function App() {
           id="letter1"
           name="letter1"
           data-id="1"
+          maxLength="1"
+          value={currentWord[1].letter}
           onChange={updateKeyEntry}
         />
         <Button
@@ -237,6 +250,8 @@ function App() {
           id="letter2"
           name="letter2"
           data-id="2"
+          maxLength="1"
+          value={currentWord[2].letter}
           onChange={updateKeyEntry}
         />
         <Button
@@ -250,6 +265,8 @@ function App() {
           id="letter3"
           name="letter3"
           data-id="3"
+          maxLength="1"
+          value={currentWord[3].letter}
           onChange={updateKeyEntry}
         />
         <Button
@@ -263,6 +280,8 @@ function App() {
           id="letter4"
           name="letter4"
           data-id="4"
+          maxLength="1"
+          value={currentWord[4].letter}
           onChange={updateKeyEntry}
         />
         <Button

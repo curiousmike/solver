@@ -31,7 +31,7 @@ export const LetterLabelContainer = styled.label`
 export const Button = styled.button`
   color: white;
   background-color: ${(props) =>
-    props.buttonColor === 2 ? "rgb(83, 141, 78)" : "rgb(181, 159, 59)"};
+    props.buttonColor === "correct" ? "rgb(83, 141, 78)" : "rgb(181, 159, 59)"};
 
   outline: ${(props) => (props.buttonColor === 1 ? "2px solid red" : "")};
   outline: ${(props) => (props.buttonColor === 2 ? "2px solid #007AFF" : "")};

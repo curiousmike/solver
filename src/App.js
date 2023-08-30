@@ -183,7 +183,7 @@ function App() {
     const regex = new RegExp("[A-Za-z]");
     const updatedCurrentWord = [...currentWord];
     if (regex.test(letter)) {
-      updatedCurrentWord[index].letter = letter ? letter : "";
+      updatedCurrentWord[index].letter = letter ? letter.toLowerCase() : "";
       updatedCurrentWord[index].status =
         letter !== "" ? status.Correct : status.Unknown;
     }

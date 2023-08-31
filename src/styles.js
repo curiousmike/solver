@@ -16,17 +16,31 @@ export const FiveLetterContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: 128px;
-  margin-bottom: 128px;
+  margin-top: 64px;
+  margin-bottom: 64px;
 `;
 export const LetterContainer = styled.input`
   width: 48px;
   height: 48px;
   font-size: 48px;
 `;
-export const LetterLabelContainer = styled.label`
-  margin-right: 8px;
-  margin-left: 8px;
+export const SingleLetterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-right: 24px;
+`;
+export const ResultContainer = styled.textarea`
+  width: 512px;
+  height: 256px;
+  font-size: 24px;
+  margin-top: 16px;
+  margin-bottom: 64px;
+`;
+
+export const Title = styled.div`
+  margin-top: 16px;
+  margin-bottom: 16px;
+  font-size: 48px;
 `;
 
 export const Button = styled.button`
@@ -36,12 +50,10 @@ export const Button = styled.button`
 
   outline: ${(props) => (props.buttonColor === 1 ? "2px solid red" : "")};
   outline: ${(props) => (props.buttonColor === 2 ? "2px solid #007AFF" : "")};
-  min-width: 8%;
+  min-width: 75%;
+  min-height: 75%;
   border-radius: 3px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 4px;
+  margin-top: 8px;
 `;
 
 export const SolveButton = styled.button`
@@ -49,7 +61,9 @@ export const SolveButton = styled.button`
   background-color: white;
   color: black;
   outline: "2px solid #007AFF";
-  min-width: 8%;
+  min-width: 18%;
+  min-height: 10%;
+  font-size: 24px;
   border-radius: 3px;
   display: flex;
   flex-direction: column;

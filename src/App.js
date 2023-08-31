@@ -6,9 +6,11 @@ import {
   Container,
   LetterContainer,
   FiveLetterContainer,
-  LetterLabelContainer,
   Button,
   SolveButton,
+  ResultContainer,
+  Title,
+  SingleLetterContainer,
 } from "./styles";
 import Keyboard from "./components/keyboard";
 
@@ -39,7 +41,7 @@ function App() {
   const [keyboardData, setKeyboardData] = useState({});
   const [currentWord, setCurrentWord] = useState(startingCurrentWord);
   const [unavailableLetters, setUnavailableLetters] = useState([]);
-
+  const [validWordList, setValidWordList] = useState([]);
   const buildLetterCounts = () => {
     const letterCounts = {};
     currentWord.forEach((letter) => {
@@ -73,9 +75,8 @@ function App() {
   };
 
   const solveWord = () => {
-    let validWordList = [];
     console.log("start ...");
-
+    const validWords = [];
     fiveLetterWords.forEach((dictionaryWord) => {
       // const word = fiveLetterWords[0]
       let isValidWord = true;
@@ -135,12 +136,13 @@ function App() {
 
       if (isValidWord) {
         console.log("Valid : ", dictionaryWord);
-        validWordList.push(dictionaryWord);
+        validWords.push(dictionaryWord);
       } else {
         // console.log(`Invalid:  ${dictionaryWord} validation issue ${validationIssue}`)
       }
     });
-    console.log("validWordList = ", validWordList);
+    setValidWordList(validWords);
+    console.log("validWordList = ", validWords);
   };
 
   const handleKey = (key) => {
@@ -180,7 +182,7 @@ function App() {
       if (regex.test(letter)) {
         updatedCurrentWord[index].letter = letter ? letter.toLowerCase() : "";
         updatedCurrentWord[index].status =
-          letter !== "" ? status.Correct : status.Unknown;
+          letter !== "" ? status.WrongSpot : status.Unknown;
       }
     }
     setCurrentWord(updatedCurrentWord);
@@ -204,86 +206,91 @@ function App() {
 
   return (
     <Container>
-      Total 5 Letter Words {fiveLetterWords.length}
-      <br></br>
-      First Word {fiveLetterWords[0]}
+      <Title>Wordle Helper</Title>
       <FiveLetterContainer>
-        <LetterContainer
-          data-id="0"
-          type="text"
-          id="letter0"
-          name="letter0"
-          maxLength="1"
-          value={currentWord[0].letter}
-          onChange={updateKeyEntry}
-        />
-        <Button
-          data-id="0"
-          buttonColor={currentWord[0].status}
-          onClick={updateKeyStatus}
-        />
-
-        <LetterContainer
-          type="text"
-          id="letter1"
-          name="letter1"
-          data-id="1"
-          maxLength="1"
-          value={currentWord[1].letter}
-          onChange={updateKeyEntry}
-        />
-        <Button
-          data-id="1"
-          buttonColor={currentWord[1].status}
-          onClick={updateKeyStatus}
-        />
-
-        <LetterContainer
-          type="text"
-          id="letter2"
-          name="letter2"
-          data-id="2"
-          maxLength="1"
-          value={currentWord[2].letter}
-          onChange={updateKeyEntry}
-        />
-        <Button
-          data-id="2"
-          buttonColor={currentWord[2].status}
-          onClick={updateKeyStatus}
-        />
-
-        <LetterContainer
-          type="text"
-          id="letter3"
-          name="letter3"
-          data-id="3"
-          maxLength="1"
-          value={currentWord[3].letter}
-          onChange={updateKeyEntry}
-        />
-        <Button
-          data-id="3"
-          buttonColor={currentWord[3].status}
-          onClick={updateKeyStatus}
-        />
-
-        <LetterContainer
-          type="text"
-          id="letter4"
-          name="letter4"
-          data-id="4"
-          maxLength="1"
-          value={currentWord[4].letter}
-          onChange={updateKeyEntry}
-        />
-        <Button
-          data-id="4"
-          buttonColor={currentWord[4].status}
-          onClick={updateKeyStatus}
-        />
+        <SingleLetterContainer>
+          <LetterContainer
+            data-id="0"
+            type="text"
+            id="letter0"
+            name="letter0"
+            maxLength="3"
+            value={currentWord[0].letter}
+            onChange={updateKeyEntry}
+          />
+          <Button
+            data-id="0"
+            buttonColor={currentWord[0].status}
+            onClick={updateKeyStatus}
+          />
+        </SingleLetterContainer>
+        <SingleLetterContainer>
+          <LetterContainer
+            type="text"
+            id="letter1"
+            name="letter1"
+            data-id="1"
+            maxLength="3"
+            value={currentWord[1].letter}
+            onChange={updateKeyEntry}
+          />
+          <Button
+            data-id="1"
+            buttonColor={currentWord[1].status}
+            onClick={updateKeyStatus}
+          />
+        </SingleLetterContainer>
+        <SingleLetterContainer>
+          <LetterContainer
+            type="text"
+            id="letter2"
+            name="letter2"
+            data-id="2"
+            maxLength="3"
+            value={currentWord[2].letter}
+            onChange={updateKeyEntry}
+          />
+          <Button
+            data-id="2"
+            buttonColor={currentWord[2].status}
+            onClick={updateKeyStatus}
+          />
+        </SingleLetterContainer>
+        <SingleLetterContainer>
+          <LetterContainer
+            type="text"
+            id="letter3"
+            name="letter3"
+            data-id="3"
+            maxLength="3"
+            value={currentWord[3].letter}
+            onChange={updateKeyEntry}
+          />
+          <Button
+            data-id="3"
+            buttonColor={currentWord[3].status}
+            onClick={updateKeyStatus}
+          />
+        </SingleLetterContainer>
+        <SingleLetterContainer>
+          <LetterContainer
+            type="text"
+            id="letter4"
+            name="letter4"
+            data-id="4"
+            maxLength="3"
+            value={currentWord[4].letter}
+            onChange={updateKeyEntry}
+          />
+          <Button
+            data-id="4"
+            buttonColor={currentWord[4].status}
+            onClick={updateKeyStatus}
+          />
+        </SingleLetterContainer>
       </FiveLetterContainer>
       <SolveButton onClick={solveWord}>Solve</SolveButton>
+      <ResultContainer value={validWordList} />
       <Keyboard
         keyboardData={keyboardData}
         handleKeyPress={(e) => handleKey(e)}

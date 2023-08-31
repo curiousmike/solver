@@ -16,25 +16,25 @@ export const FiveLetterContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: 64px;
-  margin-bottom: 64px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 `;
 export const LetterContainer = styled.input`
-  width: 48px;
-  height: 48px;
-  font-size: 48px;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
 `;
 export const SingleLetterContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-right: 24px;
+  margin-right: 20px;
 `;
 export const ResultContainer = styled.textarea`
-  width: 512px;
+  width: 100%;
   height: 256px;
-  font-size: 24px;
+  font-size: 20px;
   margin-top: 16px;
-  margin-bottom: 64px;
+  margin-bottom: 16px;
 `;
 
 export const Title = styled.div`
@@ -61,12 +61,12 @@ export const SolveButton = styled.button`
   background-color: white;
   color: black;
   outline: "2px solid #007AFF";
-  min-width: 18%;
-  min-height: 10%;
-  font-size: 24px;
+  min-width: 14%;
+  min-height: 8%;
+  font-size: 16px;
   border-radius: 3px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 4px;
+  margin-top: 12px;
 `;

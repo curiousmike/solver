@@ -29,11 +29,11 @@ const status = {
   Correct: "correct",
 };
 const startingCurrentWord = [
-  { letter: "", status: status.Unknown },
-  { letter: "", status: status.Unknown },
-  { letter: "", status: status.Unknown },
-  { letter: "", status: status.Unknown },
-  { letter: "", status: status.Unknown },
+  { letter: "", status: status.WrongSpot },
+  { letter: "", status: status.WrongSpot },
+  { letter: "", status: status.WrongSpot },
+  { letter: "", status: status.WrongSpot },
+  { letter: "", status: status.WrongSpot },
 ];
 
 function App() {
@@ -128,9 +128,12 @@ function App() {
       //  G   G   Y    Y  Y
       // should generate OCTAL
 
+      // [Z] [] [s] [on] [o]
+      //  G  Y   Y   Y    Y
+      // should generate zones
+
       if (isValidWord) {
         const currentWordLetterCounts = buildLetterCounts(currentWord);
-        console.log("currentWorldLetterCounts = ", currentWordLetterCounts);
         const dictionaryWordLetterCounts =
           buildLetterWholeCounts(dictionaryWord);
         for (const [key, value] of Object.entries(currentWordLetterCounts)) {
@@ -213,6 +216,7 @@ function App() {
   const updateKeyStatus = (e) => {
     const index = e.target.getAttribute("data-id");
     const updatedCurrentWord = [...currentWord];
+    console.log("status = ", updatedCurrentWord[index].status);
 
     if (updatedCurrentWord[index].status === status.WrongSpot) {
       updatedCurrentWord[index].status = status.Correct;

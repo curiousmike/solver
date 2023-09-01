@@ -12,10 +12,16 @@ export const Container = styled.div`
   overflow: hidden;
 `;
 
+export const Title = styled.div`
+  margin-top: 16px;
+  margin-bottom: 16px;
+  font-size: 48px;
+`;
+
 export const FiveLetterContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  max-width: 420px;
+  width: 95%;
   min-height: 25%;
 `;
 
@@ -23,7 +29,7 @@ export const SingleLetterContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 0px;
-  margin-right: 8px;
+  margin-right: 4px;
 `;
 export const LetterContainer = styled.input`
   font-size: 20px;
@@ -42,17 +48,10 @@ export const Button = styled.button`
 `;
 
 export const ResultContainer = styled.textarea`
-  width: 100%;
   font-size: 20px;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  width: 80%;
+  margin: 8px 8px 8px 8px;
   height: 25%;
-`;
-
-export const Title = styled.div`
-  margin-top: 16px;
-  margin-bottom: 16px;
-  font-size: 48px;
 `;
 
 export const SolveButton = styled.button`

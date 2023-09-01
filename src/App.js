@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 import { fiveLetterWords } from "./fiveLetterWords.js";
 import {
@@ -41,6 +41,7 @@ function App() {
   const [currentWord, setCurrentWord] = useState(startingCurrentWord);
   const [unavailableLetters, setUnavailableLetters] = useState([]);
   const [validWordList, setValidWordList] = useState([]);
+
   const buildLetterCounts = () => {
     const letterCounts = {};
     currentWord.forEach((letter) => {
@@ -78,13 +79,13 @@ function App() {
   const solveWord = () => {
     const validWords = [];
 
-    const testWords = ["space"];
+    // const testWords = ["space"];
     // testWords.forEach((dictionaryWord) => {
     fiveLetterWords.forEach((dictionaryWord) => {
       let isValidWord = true;
       var validationIssue = null;
       for (let wordLetterIndex = 0; wordLetterIndex < 5; wordLetterIndex++) {
-        const letter = dictionaryWord[wordLetterIndex];
+        const letter = dictionaryWord.word[wordLetterIndex];
         if (currentWord[wordLetterIndex].status === status.Correct) {
           if (letter !== currentWord[wordLetterIndex].letter) {
             validationIssue = `Can only be ${currentWord[wordLetterIndex].letter} in spot ${wordLetterIndex}`;
@@ -109,6 +110,7 @@ function App() {
             if (letter === currentWordLetter) {
               isValidWord = false;
               validationIssue = `Wrong spot: ${letter} is in puzzle but not index ${wordLetterIndex}`;
+              break;
             }
           }
           for (let u = 0; u < unavailableLetters.length; u++) {
@@ -134,16 +136,15 @@ function App() {
 
       if (isValidWord) {
         const currentWordLetterCounts = buildLetterCounts(currentWord);
-        const dictionaryWordLetterCounts =
-          buildLetterWholeCounts(dictionaryWord);
+        const dictionaryWordLetterCounts = buildLetterWholeCounts(
+          dictionaryWord.word
+        );
         for (const [key, value] of Object.entries(currentWordLetterCounts)) {
-          // console.log('key/value = ', key, value)
           if (
             !dictionaryWordLetterCounts[key]
             //  ||
             // dictionaryWordLetterCounts[key].count < value.count
           ) {
-            // console.log('wrong')
             isValidWord = false;
             // validationIssue = `The dictionary word doesn't have enough letters: ${key}`;
             break;
@@ -152,8 +153,8 @@ function App() {
       }
 
       if (isValidWord) {
-        console.log("Valid : ", dictionaryWord);
-        validWords.push(dictionaryWord);
+        console.log("Valid : ", dictionaryWord.word);
+        validWords.push(dictionaryWord.word);
       } else {
         // console.log(`Invalid:  ${dictionaryWord} validation issue ${validationIssue}`)
       }
@@ -315,7 +316,7 @@ function App() {
         </SingleLetterContainer>
       </FiveLetterContainer>
       <SolveButton onClick={solveWord}>Solve</SolveButton>
-      <ResultContainer value={validWordList} />
+      <ResultContainer value={validWordList} readOnly />
       <Keyboard
         keyboardData={keyboardData}
         handleKeyPress={(e) => handleRemoveKey(e)}

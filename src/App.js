@@ -23,7 +23,6 @@ const appHeight = () => {
 window.addEventListener("resize", appHeight);
 appHeight();
 
-// solveWord();
 const status = {
   Unknown: "unknown",
   WrongSpot: "wrongspot",
@@ -45,17 +44,19 @@ function App() {
   const buildLetterCounts = () => {
     const letterCounts = {};
     currentWord.forEach((letter) => {
-      const theLetter = letter.letter;
-      if (theLetter !== "") {
-        if (!letterCounts[theLetter]) {
-          letterCounts[theLetter] = {};
-          letterCounts[theLetter].count = 1;
-        } else {
-          letterCounts[theLetter].count++;
+      const letterString = letter.letter;
+      for (var i = 0; i < letterString.length; i++) {
+        const theLetter = letterString[i];
+        if (theLetter !== "") {
+          if (!letterCounts[theLetter]) {
+            letterCounts[theLetter] = {};
+            letterCounts[theLetter].count = 1;
+          } else {
+            letterCounts[theLetter].count++;
+          }
         }
       }
     });
-    // console.log('letterConts = ', letterCounts)
     return letterCounts;
   };
 
@@ -75,10 +76,11 @@ function App() {
   };
 
   const solveWord = () => {
-    console.log("start ...");
     const validWords = [];
+
+    const testWords = ["space"];
+    // testWords.forEach((dictionaryWord) => {
     fiveLetterWords.forEach((dictionaryWord) => {
-      // const word = fiveLetterWords[0]
       let isValidWord = true;
       var validationIssue = null;
       for (let wordLetterIndex = 0; wordLetterIndex < 5; wordLetterIndex++) {
@@ -101,9 +103,13 @@ function App() {
             }
           }
         } else if (currentWord[wordLetterIndex].status === status.WrongSpot) {
-          if (letter === currentWord[wordLetterIndex].letter) {
-            isValidWord = false;
-            validationIssue = `Wrong spot: ${letter} is in puzzle but not index ${wordLetterIndex}`;
+          // If you have "abc" as wrongSpot in the 0th option, ensure that our current letter is not a, b or c
+          for (var i = 0; i < currentWord[wordLetterIndex].letter.length; i++) {
+            const currentWordLetter = currentWord[wordLetterIndex].letter[i];
+            if (letter === currentWordLetter) {
+              isValidWord = false;
+              validationIssue = `Wrong spot: ${letter} is in puzzle but not index ${wordLetterIndex}`;
+            }
           }
           for (let u = 0; u < unavailableLetters.length; u++) {
             if (unavailableLetters[u] === letter) {
@@ -115,16 +121,24 @@ function App() {
         }
       }
       // final validation - verify every letter in currentWord shows up in the dictionary word
-      // ocher should not be valid for ocean
+      //
+      // ocher should not be valid for ocean if we said there is an 'a' in the 3rd and 5th letter
+      //
+      // [o] [c] [al] [] [a]
+      //  G   G   Y    Y  Y
+      // should generate OCTAL
+
       if (isValidWord) {
         const currentWordLetterCounts = buildLetterCounts(currentWord);
+        console.log("currentWorldLetterCounts = ", currentWordLetterCounts);
         const dictionaryWordLetterCounts =
           buildLetterWholeCounts(dictionaryWord);
         for (const [key, value] of Object.entries(currentWordLetterCounts)) {
           // console.log('key/value = ', key, value)
           if (
-            !dictionaryWordLetterCounts[key] ||
-            dictionaryWordLetterCounts[key].count < value.count
+            !dictionaryWordLetterCounts[key]
+            //  ||
+            // dictionaryWordLetterCounts[key].count < value.count
           ) {
             // console.log('wrong')
             isValidWord = false;
@@ -145,7 +159,8 @@ function App() {
     console.log("validWordList = ", validWords);
   };
 
-  const handleKey = (key) => {
+  // This method is for tapping on keyboard to say 'the letter "Z" is _not_ in the puzzle
+  const handleRemoveKey = (key) => {
     if (key === "GO") {
       solveWord();
     } else {
@@ -172,23 +187,29 @@ function App() {
   const updateKeyEntry = (e) => {
     const index = e.target.getAttribute("data-id");
     const regex = new RegExp("[A-Za-z]");
-    const letter = e.target.value;
+    const string = e.target.value;
     const updatedCurrentWord = [...currentWord];
-
-    if (letter === "") {
+    if (string === "") {
       updatedCurrentWord[index].letter = "";
       updatedCurrentWord[index].status = status.Unknown;
     } else {
-      if (regex.test(letter)) {
-        updatedCurrentWord[index].letter = letter ? letter.toLowerCase() : "";
-        updatedCurrentWord[index].status =
-          letter !== "" ? status.WrongSpot : status.Unknown;
+      let updatedLetters = "";
+      for (let i = 0; i < string.length; i++) {
+        let letter = string[i];
+        if (regex.test(letter)) {
+          updatedLetters += letter ? letter.toLowerCase() : "";
+          updatedCurrentWord[index].status =
+            letter !== "" ? status.WrongSpot : status.Unknown;
+        }
       }
+      console.log("updated letters = ", updatedLetters);
+      updatedCurrentWord[index].letter = updatedLetters;
     }
     setCurrentWord(updatedCurrentWord);
     console.log("updated = ", updatedCurrentWord);
   };
 
+  // This says whether this letter is "in the right spot" or "in the puzzle but not at this spot"
   const updateKeyStatus = (e) => {
     const index = e.target.getAttribute("data-id");
     const updatedCurrentWord = [...currentWord];
@@ -293,7 +314,7 @@ function App() {
       <ResultContainer value={validWordList} />
       <Keyboard
         keyboardData={keyboardData}
-        handleKeyPress={(e) => handleKey(e)}
+        handleKeyPress={(e) => handleRemoveKey(e)}
         visible={true}
       />
     </Container>

@@ -6,11 +6,13 @@ import {
   Container,
   LetterContainer,
   FiveLetterContainer,
-  Button,
+  StatusButton,
   SolveButton,
   ResultContainer,
   Title,
   SingleLetterContainer,
+  SolveButtonContainer,
+  CommonWordContainer,
 } from "./styles";
 import Keyboard from "./components/keyboard";
 
@@ -41,7 +43,9 @@ function App() {
   const [currentWord, setCurrentWord] = useState(startingCurrentWord);
   const [unavailableLetters, setUnavailableLetters] = useState([]);
   const [validWordList, setValidWordList] = useState([]);
-
+  const [validCommonWordList, setCommonWordList] = useState([]);
+  const [showOnlyCommonWords, setShowOnlyCommonWords] = useState(true);
+  // const [wordCommonness, setWordCommonness] = useState(fiveLetterWords);
   const buildLetterCounts = () => {
     const letterCounts = {};
     currentWord.forEach((letter) => {
@@ -72,12 +76,12 @@ function App() {
         letterCounts[letter].count++;
       }
     }
-    // console.log('letterConts = ', letterCounts)
     return letterCounts;
   };
 
   const solveWord = () => {
     const validWords = [];
+    const commonWords = [];
 
     // const testWords = ["space"];
     // testWords.forEach((dictionaryWord) => {
@@ -155,12 +159,15 @@ function App() {
       if (isValidWord) {
         console.log("Valid : ", dictionaryWord.word);
         validWords.push(dictionaryWord.word);
+        if (dictionaryWord.common === 1) {
+          commonWords.push(dictionaryWord.word);
+        }
       } else {
         // console.log(`Invalid:  ${dictionaryWord} validation issue ${validationIssue}`)
       }
     });
     setValidWordList(validWords);
-    console.log("validWordList = ", validWords);
+    setCommonWordList(commonWords);
   };
 
   // This method is for tapping on keyboard to say 'the letter "Z" is _not_ in the puzzle
@@ -230,6 +237,23 @@ function App() {
     setCurrentWord(updatedCurrentWord);
   };
 
+  // const setChecked = (e, index) => {
+  //   const updatedWords = [...wordCommonness];
+  //   console.log("e= ", e.target.checked);
+  //   console.log("\nindex = ", index);
+  //   updatedWords[index].common = e.target.checked ? 1 : 0;
+  //   console.log("updatedWorlds[index] ", updatedWords[index]);
+  //   setWordCommonness(updatedWords);
+  //   console.log("\n\n");
+  //   let str = "export const fiveLetterWords = [";
+  //   updatedWords.forEach((word) => {
+  //     str += `{ word: "${word.word}", common: ${word.common} },`;
+  //   });
+  //   str += "];";
+  //   console.log("\n\n\n");
+  //   console.log(str);
+  // };
+
   return (
     <Container>
       <Title>Wordle Helper</Title>
@@ -244,7 +268,7 @@ function App() {
             value={currentWord[0].letter}
             onChange={updateKeyEntry}
           />
-          <Button
+          <StatusButton
             data-id="0"
             buttonColor={currentWord[0].status}
             onClick={updateKeyStatus}
@@ -260,7 +284,7 @@ function App() {
             value={currentWord[1].letter}
             onChange={updateKeyEntry}
           />
-          <Button
+          <StatusButton
             data-id="1"
             buttonColor={currentWord[1].status}
             onClick={updateKeyStatus}
@@ -276,7 +300,7 @@ function App() {
             value={currentWord[2].letter}
             onChange={updateKeyEntry}
           />
-          <Button
+          <StatusButton
             data-id="2"
             buttonColor={currentWord[2].status}
             onClick={updateKeyStatus}
@@ -292,7 +316,7 @@ function App() {
             value={currentWord[3].letter}
             onChange={updateKeyEntry}
           />
-          <Button
+          <StatusButton
             data-id="3"
             buttonColor={currentWord[3].status}
             onClick={updateKeyStatus}
@@ -308,15 +332,49 @@ function App() {
             value={currentWord[4].letter}
             onChange={updateKeyEntry}
           />
-          <Button
+          <StatusButton
             data-id="4"
             buttonColor={currentWord[4].status}
             onClick={updateKeyStatus}
           />
         </SingleLetterContainer>
-      </FiveLetterContainer>
-      <SolveButton onClick={solveWord}>Solve</SolveButton>
-      <ResultContainer value={validWordList} readOnly />
+      </FiveLetterContainer>{" "}
+      <SolveButtonContainer>
+        <SolveButton onClick={solveWord}>Solve</SolveButton>
+        <CommonWordContainer>
+          Only Common Words
+          <input
+            type="checkbox"
+            checked={showOnlyCommonWords}
+            onChange={() => setShowOnlyCommonWords(!showOnlyCommonWords)}
+          />
+        </CommonWordContainer>
+      </SolveButtonContainer>
+      <ResultContainer
+        value={showOnlyCommonWords ? validCommonWordList : validWordList}
+        readOnly
+      />
+      {/* <div
+        style={{
+          maxHeight: "70%",
+          width: "400px",
+          overflowY: "scroll",
+          fontSize: "24px",
+          marginBottom: "16px",
+          letterSpacing: ".2rem",
+        }}
+      >
+        {wordCommonness.map((word, index) => (
+          <li key={index} style={{ marginBottom: "8px" }}>
+            <input
+              type="checkbox"
+              checked={word.common === 1}
+              onChange={(e) => setChecked(e, index)}
+            />
+            {index} ... {word.word}
+          </li>
+        ))}
+      </div> */}
       <Keyboard
         keyboardData={keyboardData}
         handleKeyPress={(e) => handleRemoveKey(e)}

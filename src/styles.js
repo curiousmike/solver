@@ -13,16 +13,16 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-top: 16px;
-  margin-bottom: 16px;
-  font-size: 48px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  font-size: 40px;
 `;
 
 export const FiveLetterContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 95%;
-  min-height: 25%;
+  min-height: 20%;
 `;
 
 export const SingleLetterContainer = styled.div`
@@ -35,7 +35,7 @@ export const LetterContainer = styled.input`
   font-size: 20px;
   height: 50%;
 `;
-export const Button = styled.button`
+export const StatusButton = styled.button`
   color: white;
   background-color: ${(props) =>
     props.buttonColor === "correct" ? "rgb(83, 141, 78)" : "rgb(181, 159, 59)"};
@@ -54,6 +54,15 @@ export const ResultContainer = styled.textarea`
   height: 25%;
 `;
 
+export const CommonWordContainer = styled.div`
+  margin-left: 20%;
+  display: flex;
+`;
+
+export const SolveButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 export const SolveButton = styled.button`
   color: white;
   background-color: white;

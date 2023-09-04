@@ -16,6 +16,7 @@ import {
 } from "./styles";
 import Keyboard from "./components/keyboard";
 
+const NUMBER_LETTERS = 5;
 // This "appHeight" is the "fix" for iOS safari representing vh differently based on whether their footer is visible.
 const appHeight = () => {
   const doc = document.documentElement;
@@ -45,7 +46,6 @@ function App() {
   const [validWordList, setValidWordList] = useState([]);
   const [validCommonWordList, setCommonWordList] = useState([]);
   const [showOnlyCommonWords, setShowOnlyCommonWords] = useState(true);
-  // const [wordCommonness, setWordCommonness] = useState(fiveLetterWords);
   const buildLetterCounts = () => {
     const letterCounts = {};
     currentWord.forEach((letter) => {
@@ -83,12 +83,14 @@ function App() {
     const validWords = [];
     const commonWords = [];
 
-    // const testWords = ["space"];
-    // testWords.forEach((dictionaryWord) => {
     fiveLetterWords.forEach((dictionaryWord) => {
       let isValidWord = true;
       var validationIssue = null;
-      for (let wordLetterIndex = 0; wordLetterIndex < 5; wordLetterIndex++) {
+      for (
+        let wordLetterIndex = 0;
+        wordLetterIndex < NUMBER_LETTERS;
+        wordLetterIndex++
+      ) {
         const letter = dictionaryWord.word[wordLetterIndex];
         if (currentWord[wordLetterIndex].status === status.Correct) {
           if (letter !== currentWord[wordLetterIndex].letter) {
@@ -144,13 +146,8 @@ function App() {
           dictionaryWord.word
         );
         for (const [key, value] of Object.entries(currentWordLetterCounts)) {
-          if (
-            !dictionaryWordLetterCounts[key]
-            //  ||
-            // dictionaryWordLetterCounts[key].count < value.count
-          ) {
+          if (!dictionaryWordLetterCounts[key]) {
             isValidWord = false;
-            // validationIssue = `The dictionary word doesn't have enough letters: ${key}`;
             break;
           }
         }
@@ -162,8 +159,6 @@ function App() {
         if (dictionaryWord.common === 1) {
           commonWords.push(dictionaryWord.word);
         }
-      } else {
-        // console.log(`Invalid:  ${dictionaryWord} validation issue ${validationIssue}`)
       }
     });
     setValidWordList(validWords);
@@ -181,7 +176,6 @@ function App() {
       } else {
         updatedKeyboardData[key] = 1;
       }
-      console.log("updatedKeybarod ", updatedKeyboardData);
       setKeyboardData(updatedKeyboardData);
       let unavailable = [];
       for (const [key, value] of Object.entries(updatedKeyboardData)) {
@@ -189,9 +183,7 @@ function App() {
           unavailable.push(key.toLowerCase());
         }
       }
-      console.log("unavail = ", unavailable);
       setUnavailableLetters(unavailable);
-      console.log("key = ", key);
     }
   };
 
@@ -213,18 +205,15 @@ function App() {
             letter !== "" ? status.WrongSpot : status.Unknown;
         }
       }
-      console.log("updated letters = ", updatedLetters);
       updatedCurrentWord[index].letter = updatedLetters;
     }
     setCurrentWord(updatedCurrentWord);
-    console.log("updated = ", updatedCurrentWord);
   };
 
   // This says whether this letter is "in the right spot" or "in the puzzle but not at this spot"
   const updateKeyStatus = (e) => {
     const index = e.target.getAttribute("data-id");
     const updatedCurrentWord = [...currentWord];
-    console.log("status = ", updatedCurrentWord[index].status);
 
     if (updatedCurrentWord[index].status === status.WrongSpot) {
       updatedCurrentWord[index].status = status.Correct;
@@ -237,108 +226,36 @@ function App() {
     setCurrentWord(updatedCurrentWord);
   };
 
-  // const setChecked = (e, index) => {
-  //   const updatedWords = [...wordCommonness];
-  //   console.log("e= ", e.target.checked);
-  //   console.log("\nindex = ", index);
-  //   updatedWords[index].common = e.target.checked ? 1 : 0;
-  //   console.log("updatedWorlds[index] ", updatedWords[index]);
-  //   setWordCommonness(updatedWords);
-  //   console.log("\n\n");
-  //   let str = "export const fiveLetterWords = [";
-  //   updatedWords.forEach((word) => {
-  //     str += `{ word: "${word.word}", common: ${word.common} },`;
-  //   });
-  //   str += "];";
-  //   console.log("\n\n\n");
-  //   console.log(str);
-  // };
+  const buildLetterContainers = () => {
+    const containers = [];
+    for (let i = 0; i < NUMBER_LETTERS; i++) {
+      containers.push(
+        <SingleLetterContainer>
+          <LetterContainer
+            type="text"
+            id={`letter${i}`}
+            name={`letter${i}`}
+            data-id={i}
+            maxLength="3"
+            value={currentWord[i].letter}
+            onChange={updateKeyEntry}
+          />
+          <StatusButton
+            data-id={i}
+            buttonColor={currentWord[i].status}
+            onClick={updateKeyStatus}
+          />
+        </SingleLetterContainer>
+      );
+    }
+    return containers;
+  };
 
+  const letterContainers = buildLetterContainers();
   return (
     <Container>
       <Title>Wordle Helper</Title>
-      <FiveLetterContainer>
-        <SingleLetterContainer>
-          <LetterContainer
-            data-id="0"
-            type="text"
-            id="letter0"
-            name="letter0"
-            maxLength="3"
-            value={currentWord[0].letter}
-            onChange={updateKeyEntry}
-          />
-          <StatusButton
-            data-id="0"
-            buttonColor={currentWord[0].status}
-            onClick={updateKeyStatus}
-          />
-        </SingleLetterContainer>
-        <SingleLetterContainer>
-          <LetterContainer
-            type="text"
-            id="letter1"
-            name="letter1"
-            data-id="1"
-            maxLength="3"
-            value={currentWord[1].letter}
-            onChange={updateKeyEntry}
-          />
-          <StatusButton
-            data-id="1"
-            buttonColor={currentWord[1].status}
-            onClick={updateKeyStatus}
-          />
-        </SingleLetterContainer>
-        <SingleLetterContainer>
-          <LetterContainer
-            type="text"
-            id="letter2"
-            name="letter2"
-            data-id="2"
-            maxLength="3"
-            value={currentWord[2].letter}
-            onChange={updateKeyEntry}
-          />
-          <StatusButton
-            data-id="2"
-            buttonColor={currentWord[2].status}
-            onClick={updateKeyStatus}
-          />
-        </SingleLetterContainer>
-        <SingleLetterContainer>
-          <LetterContainer
-            type="text"
-            id="letter3"
-            name="letter3"
-            data-id="3"
-            maxLength="3"
-            value={currentWord[3].letter}
-            onChange={updateKeyEntry}
-          />
-          <StatusButton
-            data-id="3"
-            buttonColor={currentWord[3].status}
-            onClick={updateKeyStatus}
-          />
-        </SingleLetterContainer>
-        <SingleLetterContainer>
-          <LetterContainer
-            type="text"
-            id="letter4"
-            name="letter4"
-            data-id="4"
-            maxLength="3"
-            value={currentWord[4].letter}
-            onChange={updateKeyEntry}
-          />
-          <StatusButton
-            data-id="4"
-            buttonColor={currentWord[4].status}
-            onClick={updateKeyStatus}
-          />
-        </SingleLetterContainer>
-      </FiveLetterContainer>{" "}
+      <FiveLetterContainer>{letterContainers}</FiveLetterContainer>
       <SolveButtonContainer>
         <SolveButton onClick={solveWord}>Solve</SolveButton>
         <CommonWordContainer>
@@ -354,27 +271,6 @@ function App() {
         value={showOnlyCommonWords ? validCommonWordList : validWordList}
         readOnly
       />
-      {/* <div
-        style={{
-          maxHeight: "70%",
-          width: "400px",
-          overflowY: "scroll",
-          fontSize: "24px",
-          marginBottom: "16px",
-          letterSpacing: ".2rem",
-        }}
-      >
-        {wordCommonness.map((word, index) => (
-          <li key={index} style={{ marginBottom: "8px" }}>
-            <input
-              type="checkbox"
-              checked={word.common === 1}
-              onChange={(e) => setChecked(e, index)}
-            />
-            {index} ... {word.word}
-          </li>
-        ))}
-      </div> */}
       <Keyboard
         keyboardData={keyboardData}
         handleKeyPress={(e) => handleRemoveKey(e)}

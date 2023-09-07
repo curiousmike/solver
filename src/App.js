@@ -2,15 +2,17 @@ import "./App.css";
 import { useState } from "react";
 
 import { fiveLetterWords } from "./fiveLetterWords.js";
+import { buildLetterContainers } from "./components/letterContainer/letterContainer.js";
+import {
+  buildInPuzzleLetterCounts,
+  buildDictionaryWordLetterCounts,
+} from "./utils/utils";
 import {
   Container,
-  LetterContainer,
   FiveLetterContainer,
-  StatusButton,
   SolveButton,
   ResultContainer,
   Title,
-  SingleLetterContainer,
   SolveButtonContainer,
   CommonWordContainer,
 } from "./styles";
@@ -46,38 +48,6 @@ function App() {
   const [validWordList, setValidWordList] = useState([]);
   const [validCommonWordList, setCommonWordList] = useState([]);
   const [showOnlyCommonWords, setShowOnlyCommonWords] = useState(true);
-  const buildLetterCounts = () => {
-    const letterCounts = {};
-    currentWord.forEach((letter) => {
-      const letterString = letter.letter;
-      for (var i = 0; i < letterString.length; i++) {
-        const theLetter = letterString[i];
-        if (theLetter !== "") {
-          if (!letterCounts[theLetter]) {
-            letterCounts[theLetter] = {};
-            letterCounts[theLetter].count = 1;
-          } else {
-            letterCounts[theLetter].count++;
-          }
-        }
-      }
-    });
-    return letterCounts;
-  };
-
-  const buildLetterWholeCounts = (word) => {
-    const letterCounts = {};
-    for (let i = 0; i < word.length; i++) {
-      const letter = word[i];
-      if (!letterCounts[letter]) {
-        letterCounts[letter] = {};
-        letterCounts[letter].count = 1;
-      } else {
-        letterCounts[letter].count++;
-      }
-    }
-    return letterCounts;
-  };
 
   const solveWord = () => {
     const validWords = [];
@@ -141,12 +111,14 @@ function App() {
       // should generate zones
 
       if (isValidWord) {
-        const currentWordLetterCounts = buildLetterCounts(currentWord);
-        const dictionaryWordLetterCounts = buildLetterWholeCounts(
+        const currentWordLetterCounts = buildInPuzzleLetterCounts(currentWord);
+        const dictionaryWordLetterCounts = buildDictionaryWordLetterCounts(
           dictionaryWord.word
         );
         for (const [key, value] of Object.entries(currentWordLetterCounts)) {
+          // "T":  2
           if (!dictionaryWordLetterCounts[key]) {
+            // Did 'potato' have a value of 2 for "T"?
             isValidWord = false;
             break;
           }
@@ -154,7 +126,6 @@ function App() {
       }
 
       if (isValidWord) {
-        console.log("Valid : ", dictionaryWord.word);
         validWords.push(dictionaryWord.word);
         if (dictionaryWord.common === 1) {
           commonWords.push(dictionaryWord.word);
@@ -166,28 +137,46 @@ function App() {
   };
 
   // This method is for tapping on keyboard to say 'the letter "Z" is _not_ in the puzzle
-  const handleRemoveKey = (key) => {
+  const handleRemoveLetterFromPuzzle = (key) => {
     if (key === "GO") {
       solveWord();
     } else {
       const updatedKeyboardData = { ...keyboardData };
-      if (updatedKeyboardData[key]) {
-        updatedKeyboardData[key] = 0;
+      if (updatedKeyboardData[key.toLowerCase()]) {
+        updatedKeyboardData[key.toLowerCase()] = 0;
       } else {
-        updatedKeyboardData[key] = 1;
+        updatedKeyboardData[key.toLowerCase()] = 1;
       }
       setKeyboardData(updatedKeyboardData);
       let unavailable = [];
       for (const [key, value] of Object.entries(updatedKeyboardData)) {
         if (value === 1) {
           unavailable.push(key.toLowerCase());
+          // now, verify unavailable letters aren't in your puzzle def
+          // if you just pressed "N", make sure it's not in the your word
+          for (let n = 0; n < 5; n++) {
+            for (let m = 0; m < currentWord[n].letter.length; m++) {
+              const letter = currentWord[n].letter[m];
+              if (letter === key.toLowerCase()) {
+                // currentWord[n].letter can be an array of up to 3 letters
+                // this will break that
+                // i.e. if the user clicked "N" on the keyboard to remove it
+                // and you have "ANQ" as letters here, i don't want to remove the "A" and "Q" but this does for now
+                const updatedCurrentWord = [...currentWord];
+                updatedCurrentWord[n].letter = "";
+                updatedCurrentWord[n].status = status.Unknown;
+                setCurrentWord(updatedCurrentWord);
+              }
+            }
+          }
         }
       }
+
       setUnavailableLetters(unavailable);
     }
   };
 
-  const updateKeyEntry = (e) => {
+  const updateLetterValue = (e) => {
     const index = e.target.getAttribute("data-id");
     const regex = new RegExp("[A-Za-z]");
     const string = e.target.value;
@@ -203,6 +192,22 @@ function App() {
           updatedLetters += letter ? letter.toLowerCase() : "";
           updatedCurrentWord[index].status =
             letter !== "" ? status.WrongSpot : status.Unknown;
+
+          //test to see if you just added a letter in your updatedWord that you marked as unavailable on keyboard
+          unavailableLetters.forEach((unavailableLetter, index) => {
+            if (unavailableLetter === letter.toLowerCase()) {
+              // you have 'N' as unavailable on the keyboard - but you just typed it.  so, make it safe again
+              const updatedUnavailable = [...unavailableLetters];
+              updatedUnavailable.splice(index, 1);
+              setUnavailableLetters(updatedUnavailable);
+
+              const updatedKeyboardData = { ...keyboardData };
+              if (updatedKeyboardData[letter.toLowerCase()]) {
+                updatedKeyboardData[letter.toLowerCase()] = 0;
+              }
+              setKeyboardData(updatedKeyboardData);
+            }
+          });
         }
       }
       updatedCurrentWord[index].letter = updatedLetters;
@@ -211,7 +216,7 @@ function App() {
   };
 
   // This says whether this letter is "in the right spot" or "in the puzzle but not at this spot"
-  const updateKeyStatus = (e) => {
+  const updateLetterStatus = (e) => {
     const index = e.target.getAttribute("data-id");
     const updatedCurrentWord = [...currentWord];
 
@@ -226,32 +231,11 @@ function App() {
     setCurrentWord(updatedCurrentWord);
   };
 
-  const buildLetterContainers = () => {
-    const containers = [];
-    for (let i = 0; i < NUMBER_LETTERS; i++) {
-      containers.push(
-        <SingleLetterContainer>
-          <LetterContainer
-            type="text"
-            id={`letter${i}`}
-            name={`letter${i}`}
-            data-id={i}
-            maxLength="3"
-            value={currentWord[i].letter}
-            onChange={updateKeyEntry}
-          />
-          <StatusButton
-            data-id={i}
-            buttonColor={currentWord[i].status}
-            onClick={updateKeyStatus}
-          />
-        </SingleLetterContainer>
-      );
-    }
-    return containers;
-  };
-
-  const letterContainers = buildLetterContainers();
+  const letterContainers = buildLetterContainers(
+    currentWord,
+    updateLetterValue,
+    updateLetterStatus
+  );
   return (
     <Container>
       <Title>Wordle Helper</Title>
@@ -273,7 +257,7 @@ function App() {
       />
       <Keyboard
         keyboardData={keyboardData}
-        handleKeyPress={(e) => handleRemoveKey(e)}
+        handleKeyPress={(e) => handleRemoveLetterFromPuzzle(e)}
         visible={true}
       />
     </Container>

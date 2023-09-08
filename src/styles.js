@@ -65,3 +65,17 @@ export const SolveButton = styled.button`
   text-align: center;
   transition: all 0.2s;
 `;
+
+export const OnlyCommonCheckbox = styled.input`
+  -webkit-appearance: none;
+         display: inline-block;
+         width: 40px;
+         height: 40px;
+         background-color: gray;
+         border-radius: 5px;
+         border: 3px solid lightgray;
+         margin-right: 10px;
+      }
+      input[type=checkbox]:checked {
+         background-color: lightgreen;
+      }`;

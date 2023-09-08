@@ -17,6 +17,7 @@ import {
   SolveButtonContainer,
   CommonWordContainer,
   ScrabbleHeader,
+  OnlyCommonCheckbox,
 } from "./styles";
 import Keyboard from "./components/keyboard";
 
@@ -253,7 +254,7 @@ function App() {
         <SolveButton onClick={solveWord}>Solve</SolveButton>
         <CommonWordContainer>
           Only Common Words
-          <input
+          <OnlyCommonCheckbox
             type="checkbox"
             checked={showOnlyCommonWords}
             onChange={() => setShowOnlyCommonWords(!showOnlyCommonWords)}

@@ -1,4 +1,5 @@
 import "./App.css";
+import "./scrabble.css";
 import { useState } from "react";
 
 import { fiveLetterWords } from "./fiveLetterWords.js";
@@ -15,6 +16,7 @@ import {
   Title,
   SolveButtonContainer,
   CommonWordContainer,
+  ScrabbleHeader,
 } from "./styles";
 import Keyboard from "./components/keyboard";
 
@@ -236,9 +238,16 @@ function App() {
     updateLetterValue,
     updateLetterStatus
   );
+  const scrabbleStyle = { "--n": 5 };
   return (
     <Container>
-      <Title>Wordle Helper</Title>
+      <div className="scrabblecontainer">
+        <span className="scrabble" style={scrabbleStyle}>
+          <span>WORDLE</span>
+          <span> </span>
+          <span>HELPER</span>
+        </span>
+      </div>
       <FiveLetterContainer>{letterContainers}</FiveLetterContainer>
       <SolveButtonContainer>
         <SolveButton onClick={solveWord}>Solve</SolveButton>

@@ -264,6 +264,7 @@ function App() {
       <ResultContainer
         value={showOnlyCommonWords ? validCommonWordList : validWordList}
         readOnly
+        placeholder="Press solve button to see results"
       />
       <Keyboard
         keyboardData={keyboardData}

@@ -27,10 +27,11 @@ export const FiveLetterContainer = styled.div`
 
 export const ResultContainer = styled.textarea`
   font-size: 20px;
-  width: 80%;
-  margin: 8px 8px 8px 8px;
+  width: 90%;
+  margin: 2px 2px 2px 2px;
   height: 25%;
   background-color: lightgray;
+  resize: none;
 `;
 
 export const CommonWordContainer = styled.div`
@@ -43,18 +44,10 @@ export const SolveButtonContainer = styled.div`
   justify-content: space-between;
 `;
 export const SolveButton = styled.button`
-  // color: white;
-  // background-color: white;
-  // color: black;
-  // outline: "2px solid #007AFF";
-  font-size: 16px;
-  // border-radius: 3px;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
+  font-size: 18px;
   display: inline-block;
   padding: 0.3em 1.2em;
-  margin: 12px 0.3em 0.3em 0;
+  margin: 4px 0.3em 0.3em 0;
   border-radius: 2em;
   box-sizing: border-box;
   text-decoration: none;

@@ -13,14 +13,13 @@ import {
   FiveLetterContainer,
   SolveButton,
   ResultContainer,
-  Title,
   SolveButtonContainer,
   CommonWordContainer,
-  ScrabbleHeader,
   OnlyCommonCheckbox,
 } from "./styles";
 import Keyboard from "./components/keyboard";
 
+const instructions = `Enter letters in white boxes.\n\nChange from yellow to green by pressing yellow/green button.\n\nTap on keyboard letters to say "this letter isn't in puzzle"`;
 const NUMBER_LETTERS = 5;
 // This "appHeight" is the "fix" for iOS safari representing vh differently based on whether their footer is visible.
 const appHeight = () => {
@@ -58,7 +57,6 @@ function App() {
 
     fiveLetterWords.forEach((dictionaryWord) => {
       let isValidWord = true;
-      var validationIssue = null;
       for (
         let wordLetterIndex = 0;
         wordLetterIndex < NUMBER_LETTERS;
@@ -67,7 +65,6 @@ function App() {
         const letter = dictionaryWord.word[wordLetterIndex];
         if (currentWord[wordLetterIndex].status === status.Correct) {
           if (letter !== currentWord[wordLetterIndex].letter) {
-            validationIssue = `Can only be ${currentWord[wordLetterIndex].letter} in spot ${wordLetterIndex}`;
             isValidWord = false;
             break;
           }
@@ -78,7 +75,6 @@ function App() {
           for (let u = 0; u < unavailableLetters.length; u++) {
             if (unavailableLetters[u] === letter) {
               isValidWord = false;
-              validationIssue = `Letter not in puzzle: ${unavailableLetters[u]}`;
               break;
             }
           }
@@ -88,14 +84,12 @@ function App() {
             const currentWordLetter = currentWord[wordLetterIndex].letter[i];
             if (letter === currentWordLetter) {
               isValidWord = false;
-              validationIssue = `Wrong spot: ${letter} is in puzzle but not index ${wordLetterIndex}`;
               break;
             }
           }
           for (let u = 0; u < unavailableLetters.length; u++) {
             if (unavailableLetters[u] === letter) {
               isValidWord = false;
-              validationIssue = `Letter not in puzzle: ${unavailableLetters[u]}`;
               break;
             }
           }
@@ -118,7 +112,7 @@ function App() {
         const dictionaryWordLetterCounts = buildDictionaryWordLetterCounts(
           dictionaryWord.word
         );
-        for (const [key, value] of Object.entries(currentWordLetterCounts)) {
+        for (const [key] of Object.entries(currentWordLetterCounts)) {
           // "T":  2
           if (!dictionaryWordLetterCounts[key]) {
             // Did 'potato' have a value of 2 for "T"?
@@ -242,18 +236,21 @@ function App() {
   const scrabbleStyle = { "--n": 5 };
   return (
     <Container>
-      <div className="scrabblecontainer">
-        <span className="scrabble" style={scrabbleStyle}>
+      <div className="scrabblecontainer" style={{ marginTop: "8px" }}>
+        <div className="scrabble" style={scrabbleStyle}>
           <span>WORDLE</span>
-          <span> </span>
+        </div>
+      </div>
+      <div className="scrabblecontainer" style={{ marginBottom: "8px" }}>
+        <div className="scrabble" style={scrabbleStyle}>
           <span>HELPER</span>
-        </span>
+        </div>
       </div>
       <FiveLetterContainer>{letterContainers}</FiveLetterContainer>
       <SolveButtonContainer>
         <SolveButton onClick={solveWord}>Solve</SolveButton>
         <CommonWordContainer>
-          Only Common Words
+          Common Only
           <OnlyCommonCheckbox
             type="checkbox"
             checked={showOnlyCommonWords}
@@ -264,7 +261,7 @@ function App() {
       <ResultContainer
         value={showOnlyCommonWords ? validCommonWordList : validWordList}
         readOnly
-        placeholder="Press solve button to see results"
+        placeholder={instructions}
       />
       <Keyboard
         keyboardData={keyboardData}

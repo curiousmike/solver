@@ -43,8 +43,43 @@ const startingCurrentWord = [
   { letter: "", status: status.WrongSpot },
 ];
 
+// Solve for eject
+// const startingCurrentWord = [
+//   { letter: "", status: status.Unknown },
+//   { letter: "", status: status.Unknown },
+//   { letter: "e", status: status.Correct },
+//   { letter: "e", status: status.WrongSpot },
+//   { letter: "t", status: status.Correct },
+// ];
+// Solve for Zones
+// const startingCurrentWord = [
+//   { letter: "z", status: status.Correct },
+//   { letter: "", status: status.Unknown },
+//   { letter: "s", status: status.WrongSpot },
+//   { letter: "on", status: status.WrongSpot },
+//   { letter: "o", status: status.WrongSpot },
+// ];
+
+// Solve for audio - remove keys WERT FL CN
+// const startingCurrentWord = [
+//   { letter: "", status: status.Unknown },
+//   { letter: "o", status: status.WrongSpot },
+//   { letter: "o", status: status.WrongSpot },
+//   { letter: "", status: status.Unknown },
+//   { letter: "", status: status.Unknown },
+// ];
+
 function App() {
   const [keyboardData, setKeyboardData] = useState({});
+  // solve for eject
+  // const [keyboardData, setKeyboardData] = useState({
+  //   w: 1,
+  //   u: 1,
+  //   i: 1,
+  //   a: 1,
+  //   s: 1,
+  //   d: 1,
+  // });
   const [currentWord, setCurrentWord] = useState(startingCurrentWord);
   const [unavailableLetters, setUnavailableLetters] = useState([]);
   const [validWordList, setValidWordList] = useState([]);
@@ -56,6 +91,11 @@ function App() {
     const commonWords = [];
 
     fiveLetterWords.forEach((dictionaryWord) => {
+      // let testwords = [
+      //   { word: "zones", common: 1 },
+      //   { word: "eject", common: 1 },
+      // ];
+      // testwords.forEach((dictionaryWord) => {
       let isValidWord = true;
       for (
         let wordLetterIndex = 0;
@@ -107,15 +147,29 @@ function App() {
       //  G  Y   Y   Y    Y
       // should generate zones
 
+      // [ ][ ][e][e][t]
+      //        G  Y  G
+      // the above says "There must be two e's in the puzzle; one HAS to be in the 3rd spot, and the second one anywhere other than 4th spot"
+      // As of 9/15/23, this fails because it returns (for example) CREPT as a valid word
+
       if (isValidWord) {
         const currentWordLetterCounts = buildInPuzzleLetterCounts(currentWord);
         const dictionaryWordLetterCounts = buildDictionaryWordLetterCounts(
           dictionaryWord.word
         );
         for (const [key] of Object.entries(currentWordLetterCounts)) {
-          // "T":  2
+          // You said there is an L in the puzzle
+          // But the dictionary word has no L in it.
           if (!dictionaryWordLetterCounts[key]) {
-            // Did 'potato' have a value of 2 for "T"?
+            isValidWord = false;
+            break;
+          }
+          // if you say there is a GREEN "e" and any number of yellow "e"s, there must be at least 2 e's in the dictionaryWord
+          else if (
+            dictionaryWordLetterCounts[key] &&
+            dictionaryWordLetterCounts[key].count <
+              currentWordLetterCounts[key].count
+          ) {
             isValidWord = false;
             break;
           }

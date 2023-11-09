@@ -4768,6 +4768,7 @@ export const fiveLetterWords = [
   { word: "nills", common: 0 },
   { word: "nimbi", common: 0 },
   { word: "nines", common: 1 },
+  { word: "ninja", common: 1 },
   { word: "ninny", common: 1 },
   { word: "ninon", common: 0 },
   { word: "ninth", common: 1 },

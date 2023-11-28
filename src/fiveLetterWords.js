@@ -5299,6 +5299,7 @@ export const fiveLetterWords = [
   { word: "pithy", common: 1 },
   { word: "piton", common: 1 },
   { word: "pivot", common: 1 },
+  { word: "pixel", common: 1 },
   { word: "pixes", common: 1 },
   { word: "pixie", common: 1 },
   { word: "pixys", common: 0 },
